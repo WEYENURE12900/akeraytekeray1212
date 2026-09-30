@@ -42,7 +42,7 @@ const MIN_PASSWORD = 8;
 /** Only ever follow a same-site path, so `?next=` cannot become an open redirect. */
 function safeNext(raw: string, locale: Locale): string {
   if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return localeHref(locale, "/");
-  return raw;
+  return localeHref(locale, raw);
 }
 
 async function userAgent(): Promise<string | null> {

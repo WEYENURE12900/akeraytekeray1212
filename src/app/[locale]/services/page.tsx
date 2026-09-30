@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wrench } from "lucide-react";
+import { Plus, Wrench } from "lucide-react";
 
 import { ProviderCard } from "@/components/provider-card";
 import { Button } from "@/components/ui/button";
@@ -40,13 +40,21 @@ export default async function ServicesPage({
 
   return (
     <div className="container py-8 sm:py-12 space-y-8">
-      <div className="max-w-2xl">
-        <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          {t("services.title")}
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-          {t("services.body")}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="max-w-2xl">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {t("services.title")}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            {t("services.body")}
+          </p>
+        </div>
+        <Button asChild className="shrink-0 gap-1.5">
+          <Link href={href("/services/add")}>
+            <Plus className="size-4" aria-hidden />
+            {t("provider.addBusiness")}
+          </Link>
+        </Button>
       </div>
 
       {/* Category chips */}

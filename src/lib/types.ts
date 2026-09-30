@@ -303,6 +303,10 @@ export interface ProviderCardModel {
   ratingAvg: number;
   ratingCount: number;
   photoKey: string | null;
+  phoneAlt?: string | null;
+  website?: string | null;
+  ownerId?: string | null;
+  status?: string;
   distanceKm?: number;
 }
 

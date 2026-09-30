@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import {
   Clock,
   MapPin,
@@ -32,7 +34,7 @@ export function ProviderCard({
   isOpen?: boolean;
   className?: string;
 }) {
-  const { t, locale } = useI18n();
+  const { t, locale, href } = useI18n();
 
   const term = serviceCategoryTerm(provider.category);
   const categoryLabel = term ? (locale === "am" ? term.am : term.en) : provider.category;
@@ -45,8 +47,11 @@ export function ProviderCard({
   // skipped the r2: prefix strip and 404'd every uploaded provider photo.
   const imageUrl = `${photoUrl(provider.photoKey ?? providerPlaceholder(provider.id))}?w=600&h=400`;
 
+  const detailHref = href(`/services/${provider.id}`);
+
   return (
-    <div
+    <Link
+      href={detailHref}
       className={`group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all duration-300 hover:shadow-cardHover ${className}`}
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
@@ -133,7 +138,7 @@ export function ProviderCard({
 
         {/* Contact CTA */}
         {provider.phone ? (
-          <div className="mt-4 pt-3 border-t border-border/60">
+          <div className="mt-4 pt-3 border-t border-border/60" onClick={(e) => e.stopPropagation()}>
             <Button asChild variant="outline" size="sm" className="w-full">
               <a href={`tel:${provider.phone}`} className="flex items-center justify-center gap-2">
                 <Phone className="size-3.5 text-primary" aria-hidden />
@@ -143,7 +148,7 @@ export function ProviderCard({
           </div>
         ) : null}
       </div>
-    </div>
+    </Link>
   );
 }
 

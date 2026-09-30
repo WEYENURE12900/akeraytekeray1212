@@ -55,6 +55,10 @@ function toProvider(row: ProviderRow, locale: Locale): ProviderCardModel {
     ratingAvg: row.rating_avg,
     ratingCount: row.rating_count,
     photoKey: row.photo_key ?? providerPlaceholder(row.id),
+    phoneAlt: row.phone_alt ?? null,
+    website: row.website ?? null,
+    ownerId: row.owner_id ?? null,
+    status: row.status,
   };
 }
 
@@ -354,6 +358,7 @@ export async function providerPins(
 export async function getProvider(
   id: string,
   locale: Locale,
+  opts?: { viewerId?: string | null; isAdmin?: boolean },
 ): Promise<ProviderCardModel | null> {
   const db = await tryGetDB();
   if (!db) return null;
@@ -361,7 +366,12 @@ export async function getProvider(
     .prepare("SELECT * FROM providers WHERE id = ?")
     .bind(id)
     .first<ProviderRow>();
-  if (!row || row.status !== "published") return null;
+  if (!row) return null;
+  const isAccessible =
+    row.status === "published" ||
+    (opts?.viewerId && row.owner_id === opts.viewerId) ||
+    opts?.isAdmin;
+  if (!isAccessible) return null;
   return toProvider(row, locale);
 }
 

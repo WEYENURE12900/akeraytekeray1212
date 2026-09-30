@@ -280,23 +280,25 @@ export default async function ListingDetailPage({
             {nearbyProviders.length > 0 ? (
               <ul className="mt-4 space-y-2.5">
                 {nearbyProviders.map((provider) => (
-                  <li
-                    key={provider.id}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">
-                        {provider.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {isOpenNow(provider) ? t("services.openNow") : t("services.closed")}
-                      </p>
-                    </div>
-                    {provider.distanceKm !== undefined ? (
-                      <span className="shrink-0 text-xs font-medium text-muted-foreground">
-                        {formatDistance(provider.distanceKm)}
-                      </span>
-                    ) : null}
+                  <li key={provider.id}>
+                    <Link
+                      href={href(`/services/${provider.id}`)}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-muted/50"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-foreground">
+                          {provider.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {isOpenNow(provider) ? t("services.openNow") : t("services.closed")}
+                        </p>
+                      </div>
+                      {provider.distanceKm !== undefined ? (
+                        <span className="shrink-0 text-xs font-medium text-muted-foreground">
+                          {formatDistance(provider.distanceKm)}
+                        </span>
+                      ) : null}
+                    </Link>
                   </li>
                 ))}
               </ul>

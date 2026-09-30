@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { toggleFavoriteAction } from "@/actions/favorites";
 import { Badge } from "@/components/ui/card";
 import { useI18n } from "@/lib/i18n/client";
+import { photoUrl } from "@/lib/photos";
 import { formatDistance, formatMoney } from "@/lib/utils";
 import { propertyTypeTerm } from "@/lib/taxonomy";
 import type { ListingCardModel } from "@/lib/types";
@@ -57,7 +58,7 @@ export function ListingCard({
 
   const pTerm = propertyTypeTerm(listing.propertyType);
   const propertyLabel = pTerm ? (locale === "am" ? pTerm.am : pTerm.en) : listing.propertyType;
-  const photoUrl = listing.photos && listing.photos.length > 0 ? listing.photos[0] : `/api/ph/${listing.id}`;
+  const imageUrl = photoUrl(listing.photos?.[0] ?? listing.id);
 
   const locationText = [listing.neighborhood, listing.subcity, listing.city]
     .filter(Boolean)
@@ -72,7 +73,7 @@ export function ListingCard({
         <Link href={href(`/listing/${listing.id}`)} className="block h-full w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={photoUrl}
+            src={imageUrl}
             alt={listing.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"

@@ -50,7 +50,7 @@ export async function GET(
 
   const seed = objectKey || "kiray";
   return new Response(placeholderSvg(seed), {
-    status: 404,
+    status: 200,
     headers: {
       "content-type": "image/svg+xml; charset=utf-8",
       "cache-control": "public, max-age=300",

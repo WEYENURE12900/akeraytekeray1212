@@ -102,33 +102,40 @@ export async function setListingStatusAction(
 }
 
 /** Uploads one photo into R2 and appends it to the gallery. */
-export async function addListingPhotoAction(form: FormData): Promise<void> {
+export async function addListingPhotoAction(
+  form: FormData,
+): Promise<{ ok: boolean; error?: MessageKey }> {
   const locale = coerceLocale(field(form, "locale"));
   const user = await requireHost(locale, "/host");
 
   const listingId = field(form, "listingId");
   const file = form.get("photo");
   if (!listingId || !(file instanceof File) || file.size === 0) {
-    redirect(`${localeHref(locale, `/host/listing/${listingId}`)}?photo=missing`);
+    return { ok: false, error: "error.uploadFailed" };
   }
   if (file.size > MAX_PHOTO_BYTES) {
-    redirect(`${localeHref(locale, `/host/listing/${listingId}`)}?photo=too_big`);
+    return { ok: false, error: "error.fileTooBig" };
   }
 
   // Ownership gate: without this, any host could attach photos to any listing.
   const owned = await getOwnedListing(listingId, user.id);
   if (!owned) {
-    redirect(`${localeHref(locale, "/host")}?error=not_allowed`);
+    return { ok: false, error: "error.notAllowed" };
   }
 
-  const bucket = await getPhotos();
-  const name = newObjectName("listing", user.id, file.name || "photo.jpg");
-  await bucket.put(name, await file.arrayBuffer(), {
-    httpMetadata: { contentType: file.type || "image/jpeg" },
-  });
+  try {
+    const bucket = await getPhotos();
+    const name = newObjectName("listing", user.id, file.name || "photo.jpg");
+    await bucket.put(name, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type || "image/jpeg" },
+    });
 
-  await addPhoto(listingId, `r2:${name}`, null, null);
-  revalidatePath("/[locale]/host/listing/[id]", "page");
+    await addPhoto(listingId, `r2:${name}`, null, null);
+    revalidatePath("/[locale]/host/listing/[id]", "page");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "error.uploadFailed" };
+  }
 }
 
 /** Removes a gallery photo row and its object. */

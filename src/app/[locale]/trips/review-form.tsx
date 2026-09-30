@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,11 +33,13 @@ export function ReviewForm({
     {},
   );
 
-  if (state.ok && open) {
-    // Close once on success; the revalidation refreshes the "reviewed" flag.
-    setOpen(false);
-    toast.success(t("review.thanks"));
-  }
+  useEffect(() => {
+    if (state.ok && open) {
+      // Close once on success; the revalidation refreshes the "reviewed" flag.
+      setOpen(false);
+      toast.success(t("review.thanks"));
+    }
+  }, [state.ok, open, t]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

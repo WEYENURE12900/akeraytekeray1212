@@ -47,7 +47,12 @@ export function PhotoManager({
     form.set("photo", file);
     startTransition(async () => {
       try {
-        await addListingPhotoAction(form);
+        const res = await addListingPhotoAction(form);
+        if (!res.ok) {
+          toast.error(t(res.error ?? "error.uploadFailed"));
+        } else {
+          toast.success(t("common.save"));
+        }
       } catch {
         toast.error(t("error.uploadFailed"));
       } finally {
